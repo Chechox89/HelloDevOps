@@ -52,28 +52,3 @@ stages:
         command: test
         projects: '**/*UnitTest/*.csproj'
         arguments: --configuration Debug
-- stage: Deploy
-  displayName: Deploy stage
-  dependsOn:
-  - Build
-  - Test
-  condition: succeeded('Build')
-  jobs:
-  - deployment: Deploy
-    displayName: Deploy
-    environment:
-      name: development
-    pool:
-      vmImage: vs2017-win2016
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: AzureFunctionApp@1
-            displayName: Azure functions app deploy
-            inputs:
-              azureSubscription: 9e9e1a84-e844-4b3c-a731-23d189b43a2e
-              appType: functionApp
-              appName: fa-communication-api-dev
-              package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
-
